@@ -40,7 +40,7 @@ def process_podcast(mp3_path: str, output_json: str = "analysis_output.json"):
     with open(output_json, "w", encoding="utf-8") as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
 
-    print("✅ Done!")
+    print("Done!")
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
@@ -49,7 +49,7 @@ if __name__ == "__main__":
 
     mp3_file = sys.argv[1]
     if not Path(mp3_file).exists():
-        print(f"❌ File not found: {mp3_file}")
+        print(f"File not found: {mp3_file}")
         sys.exit(1)
 
     process_podcast(mp3_file)

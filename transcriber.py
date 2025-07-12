@@ -1,5 +1,6 @@
 # transcriber.py
 
+import sys
 import os
 import whisper
 import requests
@@ -47,7 +48,7 @@ def transcribe_audio(mp3_path: str) -> List[Dict]:
     Transcribes an MP3 file using OpenAI's Whisper model (in Hebrew).
     Returns a list of segments with 'start', 'end', and 'text'.
     """
-    model = whisper.load_model("medium")
+    model = whisper.load_model("base")
     result = model.transcribe(mp3_path, verbose=False, language="he")
 
     segments = []
@@ -72,26 +73,27 @@ def get_transcript(source: str) -> List[Dict]:
         List of dicts with 'start', 'end', 'text'.
     """
     if source.startswith("http://") or source.startswith("https://"):
-        print("🔍 Downloading MP3 from URL...")
+        print("Downloading MP3 from URL...")
         local_mp3 = download_mp3_from_url(source)
     elif os.path.isfile(source) and source.lower().endswith(".mp3"):
         local_mp3 = source
     else:
         raise ValueError("Invalid source: must be an MP3 file path or a URL to a page with an MP3.")
 
-    print("🎙️ Transcribing audio...")
+    print("Transcribing audio...")
     return transcribe_audio(local_mp3)
 
 
-if name__ == "__main__":
+if __name__ == "__main__":
     #source is a link
-    source = "https://podcasts.apple.com/us/podcast/%D7%A2%D7%95%D7%A0%D7%94-8-%D7%A4%D7%A8%D7%A7-8-%D7%96%D7%94-%D7%9C%D7%90-%D7%94%D7%9B%D7%95%D7%97-%D7%94%D7%A6%D7%A0%D7%98%D7%A8%D7%99%D7%A4%D7%95%D7%92%D7%9C%D7%99/id1691741429?i=1000716286884"  # Replace with your MP3 URL or local path
+    # source = "https://podcastim.org.il/%D7%94%D7%99%D7%A1%D7%98%D7%95%D7%A8%D7%99%D7%94-%D7%90%D7%99%D7%A0%D7%98%D7%9C%D7%A7%D7%98%D7%95%D7%90%D7%9C%D7%99%D7%AA-%D7%92%D7%A1%D7%94/"  # Replace with your MP3 URL or local path
     #source is a mp3 file
-    #source = "https://example.com/path/to/podcast.mp3"  # Replace with your MP3 URL or local path
+    source = "HIS.mp3"  # Replace with your MP3 URL or local path
     try:
         transcript_segments = get_transcript(source)
         for segment in transcript_segments:
-            print(f"{segment['start']}s - {segment['end']}s: {segment['text']}")
+            print(f"{segment['text']} ({round(segment['start'], 2)}s - {round(segment['end'], 2)}s)")
+
     except Exception as e:
         print(f"Error: {e}")
         sys.exit(1)
